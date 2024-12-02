@@ -64,10 +64,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          ./configure \
-            $WINE_CONFIG \
-            --enable-win64 \
-            --prefix=/wine-devel-amd64
+          ./configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64
           make
       - name: wine32-tools
         id: wine32-tools
@@ -79,9 +76,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X32}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
         run: |
-          ./configure \
-            $WINE_CONFIG \
-            --prefix=/wine-devel-x86
+          ./configure $WINE_CONFIG --prefix=/wine-devel-x86
           make
       - name: wine32
         id: wine32
@@ -93,9 +88,5 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          ./configure \
-            $WINE_CONFIG \
-            --with-wine64=wine-devel-amd64 \
-            --with-wine-tools=wine-devel-x86 \
-            --prefix=/wine-devel
+          ./configure $WINE_CONFIG --with-wine64=wine-devel-amd64 --with-wine-tools=wine-devel-x86 --prefix=/wine-devel
           make
