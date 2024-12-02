@@ -37,7 +37,7 @@ jobs:
           sudo apt-get --yes install \
             libwayland-bin \
             libwayland-dev \
-            libvulkan1 \
+            libvulkan-dev \
             libxpresent-dev \
             libjxr-dev \
             libusb-1.0-0-dev \
@@ -52,6 +52,19 @@ jobs:
             libpcsclite-dev \
             libcups2-dev \
             libxcb-xkb-dev \
+            libdbus-1-dev \
+            libffmpeg-ocaml-dev \
+            libgettextpo-dev \
+            libgnutls28-dev \
+            libgstreamer-plugins-bad1.0-dev \
+            libopengl-dev \
+            libosmesa6-dev \
+            libxcomposite-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            ocl-icd-opencl-dev \
+            waylandpp-dev \
             flex \
             bison \
             gcc-9 \
