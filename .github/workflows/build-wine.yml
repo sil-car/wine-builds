@@ -77,9 +77,9 @@ jobs:
         env:
           CROSSCC: "${CROSSCC_X32}"
           CROSSCXX: "${CROSSCXX_X32}"
-          CFLAGS: "${CFLAGS_X32}"
+          # CFLAGS: "${CFLAGS_X32}"
           CXXFLAGS: "${CFLAGS_X32}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X32}"
+          # CROSSCFLAGS: "${CROSSCFLAGS_X32}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
@@ -91,9 +91,9 @@ jobs:
         env:
           CROSSCC: "${CROSSCC_X32}"
           CROSSCXX: "${CROSSCXX_X32}"
-          CFLAGS: "${CFLAGS_X64}"
+          # CFLAGS: "${CFLAGS_X64}"
           CXXFLAGS: "${CFLAGS_X64}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          # CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
