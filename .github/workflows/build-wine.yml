@@ -21,8 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          github-server-url: https://gitlab.winehq.org
-          repository: wine/wine
+          repository: wine-mirror/wine
           ref: wine-9.19
           fetch-depth: 1
       - name: wine-prep
