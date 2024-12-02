@@ -19,7 +19,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          repository: https://gitlab.winehq.org/wine/wine.git
+          ref: wine-9.19
+          fetch-depth: 1
       - name: wine-prep
         id: wine-prep
         run: |
