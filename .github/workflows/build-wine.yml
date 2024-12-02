@@ -29,8 +29,8 @@ jobs:
       - name: wine-prep
         id: wine-prep
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
+          # sudo dpkg --add-architecture i386
+          # sudo apt-get update
           sudo apt-get --yes install \
             libwayland-bin \
             libwayland-dev \
@@ -66,7 +66,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          echo "which $CC: $(which $CC)"
+          ls -al .
           ./configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
           make
       - name: wine32-tools
