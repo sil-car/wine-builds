@@ -2,18 +2,18 @@ name: Build & release wine
 on:
   workflow_dispatch:
 env:
-  # CC: "gcc-9"
-  # CXX: "g++-9"
-  # CROSSCC_X32: "i686-w64-mingw32-gcc"
-  # CROSSCXX_X32: "i686-w64-mingw32-g++"
-  # CROSSCC_X64: "x86_64-w64-mingw32-gcc"
-  # CROSSCXX_X64: "x86_64-w64-mingw32-g++"
-  # CFLAGS_X32: "-msse2 -mfpmath=sse -O2 -ftree-vectorize"
-  # CFLAGS_X64: "-msse3 -mfpmath=sse -O2 -ftree-vectorize"
-  # CROSSCFLAGS_X32: "$CFLAGS_X32"
-  # CROSSCFLAGS_X64: "$CFLAGS_X64"
-  # LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
-  # CROSSLDFLAGS: "$LDFLAGS"
+  CC: "gcc-9"
+  CXX: "g++-9"
+  CROSSCC_X32: "i686-w64-mingw32-gcc"
+  CROSSCXX_X32: "i686-w64-mingw32-g++"
+  CROSSCC_X64: "x86_64-w64-mingw32-gcc"
+  CROSSCXX_X64: "x86_64-w64-mingw32-g++"
+  CFLAGS_X32: "-msse2 -mfpmath=sse -O2 -ftree-vectorize"
+  CFLAGS_X64: "-msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  CROSSCFLAGS_X32: "$CFLAGS_X32"
+  CROSSCFLAGS_X64: "$CFLAGS_X64"
+  LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
+  CROSSLDFLAGS: "$LDFLAGS"
   # MAKEFLAGS: "-j$(nproc)"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
   WINE64_DIR: "${GITHUB_WORKSPACE}/wine64"
@@ -61,13 +61,13 @@ jobs:
             gcc-multilib
       - name: wine64
         id: wine64
-        # env:
-        #   CROSSCC: "${CROSSCC_X64}"
-        #   CROSSCXX: "${CROSSCXX_X64}"
-        #   CFLAGS: "${CFLAGS_X64}"
-        #   CXXFLAGS: "${CFLAGS_X64}"
-        #   CROSSCFLAGS: "${CROSSCFLAGS_X64}"
-        #   CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
+        env:
+          # CROSSCC: "${CROSSCC_X64}"
+          CROSSCXX: "${CROSSCXX_X64}"
+          CFLAGS: "${CFLAGS_X64}"
+          CXXFLAGS: "${CFLAGS_X64}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
           mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
