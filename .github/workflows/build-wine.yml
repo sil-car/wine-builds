@@ -19,10 +19,12 @@ env:
   WINE64_DIR: "${GITHUB_WORKSPACE}/wine64"
   WINE32_DIR: "${GITHUB_WORKSPACE}/wine32"
   WINE_OUTPUT_DIR: "${GITHUB_WORKSPACE}/wine-output"
+  FOCAL_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
+  NOBLE_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,53 +36,16 @@ jobs:
         run: |
           # sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get --yes install \
-            libwayland-bin \
-            libwayland-dev \
-            libvulkan-dev \
-            libxpresent-dev \
-            libjxr-dev \
-            libusb-1.0-0-dev \
-            libgcrypt20-dev \
-            libpulse-dev \
-            libudev-dev \
-            libv4l-dev \
-            libgphoto2-dev \
-            liblcms2-dev \
-            libcapi20-dev \
-            samba-dev \
-            libpcsclite-dev \
-            libcups2-dev \
-            libxcb-xkb-dev \
-            libdbus-1-dev \
-            libffmpeg-ocaml-dev \
-            libgettextpo-dev \
-            libgnutls28-dev \
-            libgstreamer-plugins-bad1.0-dev \
-            libopengl-dev \
-            libosmesa6-dev \
-            libxcomposite-dev \
-            libxcursor-dev \
-            libxi-dev \
-            libxinerama-dev \
-            ocl-icd-opencl-dev \
-            waylandpp-dev \
-            flex \
-            bison \
-            gcc-9 \
-            g++-9 \
-            gcc-mingw-w64 \
-            g++-mingw-w64 \
-            gcc-multilib
+          sudo apt-get --yes install $NOBLE_PKGS
       - name: wine64
         id: wine64
         env:
           CROSSCC: "${CROSSCC_X64}"
           CROSSCXX: "${CROSSCXX_X64}"
-          # CFLAGS: "${CFLAGS_X64}"
-          # CXXFLAGS: "${CFLAGS_X64}"
-          # CROSSCFLAGS: "${CROSSCFLAGS_X64}"
-          # CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
+          CFLAGS: "${CFLAGS_X64}"
+          CXXFLAGS: "${CFLAGS_X64}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
           mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
@@ -90,10 +55,10 @@ jobs:
         env:
           CROSSCC: "${CROSSCC_X32}"
           CROSSCXX: "${CROSSCXX_X32}"
-          # CFLAGS: "${CFLAGS_X32}"
-          # CXXFLAGS: "${CFLAGS_X32}"
-          # CROSSCFLAGS: "${CROSSCFLAGS_X32}"
-          # CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
+          CFLAGS: "${CFLAGS_X32}"
+          CXXFLAGS: "${CFLAGS_X32}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X32}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
@@ -104,10 +69,10 @@ jobs:
         env:
           CROSSCC: "${CROSSCC_X32}"
           CROSSCXX: "${CROSSCXX_X32}"
-          # CFLAGS: "${CFLAGS_X64}"
-          # CXXFLAGS: "${CFLAGS_X64}"
-          # CROSSCFLAGS: "${CROSSCFLAGS_X64}"
-          # CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
+          CFLAGS: "${CFLAGS_X64}"
+          CXXFLAGS: "${CFLAGS_X64}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
