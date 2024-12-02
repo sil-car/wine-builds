@@ -16,6 +16,9 @@ env:
   CROSSLDFLAGS: "$LDFLAGS"
   MAKEFLAGS: "-j$(nproc)"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
+  WINE64_DIR: "${GITHUB_WORKSPACE}/wine64"
+  WINE32_DIR: "${GITHUB_WORKSPACE}/wine32"
+  WINE_OUTPUT_DIR: "${GITHUB_WORKSPACE}/wine-output"
 
 jobs:
   build:
@@ -66,7 +69,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          ls -al .
+          mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
           ./configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
           make
       - name: wine32-tools
@@ -80,7 +83,8 @@ jobs:
           CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
-          ./configure $WINE_CONFIG --prefix=/wine-devel-x86
+          mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
+          ../configure $WINE_CONFIG --prefix=/wine-devel-x86
           make
       - name: wine32
         id: wine32
@@ -93,5 +97,6 @@ jobs:
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
-          ./configure $WINE_CONFIG --with-wine64=wine-devel-amd64 --with-wine-tools=wine-devel-x86 --prefix=/wine-devel
+          mkdir -p "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
+          ./configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_DIR" --prefix=/wine-devel
           make
