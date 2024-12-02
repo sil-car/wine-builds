@@ -69,7 +69,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
+          mkdir -pm777 "$WINE64_DIR" && cd "$WINE64_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
           make
       - name: wine32-tools
@@ -83,7 +83,7 @@ jobs:
           CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
-          mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
+          mkdir -pm777 "$WINE32_DIR" && cd "$WINE32_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --prefix=/wine-devel-x86
           make
       - name: wine32
@@ -97,6 +97,6 @@ jobs:
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
-          mkdir -p "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
+          mkdir -pm777 "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_DIR" --prefix=/wine-devel
           make
