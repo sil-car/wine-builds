@@ -2,8 +2,8 @@ name: Build & release wine
 on:
   workflow_dispatch:
 env:
-  CC: "gcc-9"
-  CXX: "g++-9"
+  # CC: "gcc-9"
+  # CXX: "g++-9"
   CROSSCC_X32: "i686-w64-mingw32-gcc"
   CROSSCXX_X32: "i686-w64-mingw32-g++"
   CROSSCC_X64: "x86_64-w64-mingw32-gcc"
