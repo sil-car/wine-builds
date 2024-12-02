@@ -1,0 +1,83 @@
+name: Build & release wine
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
+    steps:
+      - uses: actions/checkout@v3
+      - name: wine-prep
+        id: wine-prep
+        run: |
+          dpkg --add-architecture i386
+          apt-get update
+          apt-get --yes install \
+            libvulkan1:i386 \
+            libxpresent-dev:i386 \
+            libjxr-dev:i386 \
+            libusb-1.0-0-dev:i386 \
+            libgcrypt20-dev:i386 \
+            libpulse-dev:i386 \
+            libudev-dev:i386 \
+            libudev-dev:i386 \
+            libsane-dev:i386 \
+            libsane-dev:i386 \
+            libv4l-dev:i386 \
+            libgphoto2-dev:i386 \
+            liblcms2-dev:i386 \
+            libcapi20-dev:i386 \
+            samba-dev:i386 \
+            libpcsclite-dev:i386 \
+            libcups2-dev:i386 \
+            libxcb-xkb-dev:i386 \
+            libwayland-bin:i386 \
+            libwayland-dev:i386 \
+            libvulkan1 \
+            libxpresent-dev \
+            libjxr-dev \
+            libusb-1.0-0-dev \
+            libgcrypt20-dev \
+            libpulse-dev \
+            libudev-dev \
+            libv4l-dev \
+            libgphoto2-dev \
+            liblcms2-dev \
+            libcapi20-dev \
+            samba-dev \
+            libpcsclite-dev \
+            libcups2-dev \
+            libxcb-xkb-dev \
+            flex \
+            bison \
+            gcc-9 \
+            g++-9 \
+            gcc-mingw-w64 \
+            g++-mingw-w64 \
+            gcc-multilib
+      - name: wine64
+        id: wine64
+        run: |
+          ./configure \
+            $WINE_CONFIG \
+            --enable-win64 \
+            --prefix=/wine-devel-amd64
+          make
+      - name: wine32-tools
+        id: wine32-tools
+        run: |
+          ./configure \
+            $WINE_CONFIG \
+            --prefix=/wine-devel-x86
+          make
+      - name: wine32
+        id: wine32
+        run: |
+          ./configure \
+            $WINE_CONFIG \
+            --with-wine64=wine-devel-amd64 \
+            --with-wine-tools=wine-devel-x86 \
+            --prefix=/wine-devel
+          make
