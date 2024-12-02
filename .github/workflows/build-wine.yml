@@ -1,12 +1,23 @@
 name: Build & release wine
 on:
   workflow_dispatch:
+env:
+  CC: "gcc-9"
+  CXX: "g++-9"
+  CROSSCC_X32: "i686-w64-mingw32-gcc"
+  CROSSCXX_X32: "i686-w64-mingw32-g++"
+  CROSSCC_X64: "x86_64-w64-mingw32-gcc"
+  CROSSCXX_X64: "x86_64-w64-mingw32-g++"
+  CFLAGS_X32: "-msse2 -mfpmath=sse -O2 -ftree-vectorize"
+  CFLAGS_X64: "-msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
+  CROSSLDFLAGS: "${LDFLAGS}"
+  MAKEFLAGS: "-j$(nproc)"
+  WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
     steps:
       - uses: actions/checkout@v3
       - name: wine-prep
@@ -59,6 +70,13 @@ jobs:
             gcc-multilib
       - name: wine64
         id: wine64
+        env:
+          CROSSCC: "${CROSSCC_X64}"
+          CROSSCXX: "${CROSSCXX_X64}"
+          CFLAGS: "${CFLAGS_X64}"
+          CXXFLAGS: "${CFLAGS_X64}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
           ./configure \
             $WINE_CONFIG \
@@ -67,6 +85,13 @@ jobs:
           make
       - name: wine32-tools
         id: wine32-tools
+        env:
+          CROSSCC: "${CROSSCC_X32}"
+          CROSSCXX: "${CROSSCXX_X32}"
+          CFLAGS: "${CFLAGS_X32}"
+          CXXFLAGS: "${CFLAGS_X32}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X32}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
         run: |
           ./configure \
             $WINE_CONFIG \
@@ -74,6 +99,13 @@ jobs:
           make
       - name: wine32
         id: wine32
+        env:
+          CROSSCC: "${CROSSCC_X32}"
+          CROSSCXX: "${CROSSCXX_X32}"
+          CFLAGS: "${CFLAGS_X64}"
+          CXXFLAGS: "${CFLAGS_X64}"
+          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
           ./configure \
             $WINE_CONFIG \
