@@ -64,9 +64,9 @@ jobs:
         env:
           CROSSCC: "${CROSSCC_X64}"
           CROSSCXX: "${CROSSCXX_X64}"
-          # CFLAGS: "${CFLAGS_X64}"
+          CFLAGS: "${CFLAGS_X64}"
           CXXFLAGS: "${CFLAGS_X64}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
+          # CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
           mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
