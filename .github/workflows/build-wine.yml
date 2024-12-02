@@ -10,8 +10,10 @@ env:
   CROSSCXX_X64: "x86_64-w64-mingw32-g++"
   CFLAGS_X32: "-msse2 -mfpmath=sse -O2 -ftree-vectorize"
   CFLAGS_X64: "-msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  CROSSCFLAGS_X32: "$CFLAGS_X32"
+  CROSSCFLAGS_X64: "$CFLAGS_X64"
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
-  CROSSLDFLAGS: "${LDFLAGS}"
+  CROSSLDFLAGS: "$LDFLAGS"
   MAKEFLAGS: "-j$(nproc)"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
 
