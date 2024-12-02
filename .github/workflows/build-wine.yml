@@ -32,7 +32,6 @@ jobs:
           sudo apt-get --yes install \
             libvulkan1:i386 \
             libxpresent-dev:i386 \
-            libjxr-dev:i386 \
             libusb-1.0-0-dev:i386 \
             libgcrypt20-dev:i386 \
             libpulse-dev:i386 \
