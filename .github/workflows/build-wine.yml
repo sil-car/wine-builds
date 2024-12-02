@@ -10,7 +10,7 @@ env:
   CROSSCXX_X64: "x86_64-w64-mingw32-g++"
   CFLAGS_X32: "-msse2 -mfpmath=sse -O2 -ftree-vectorize"
   # CFLAGS_X64: "-msse3 -mfpmath=sse -O2 -ftree-vectorize"
-  CFLAFS_X64: "-mfpmath=sse -O2 -ftree-vectorize"
+  CFLAFS_X64: "-msse3 -O2 -ftree-vectorize"
   CROSSCFLAGS_X32: "$CFLAGS_X32"
   CROSSCFLAGS_X64: "$CFLAGS_X64"
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
