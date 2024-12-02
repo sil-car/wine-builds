@@ -66,7 +66,7 @@ jobs:
           CROSSCFLAGS: "${CROSSCFLAGS_X64}"
           CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
         run: |
-          ./configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
+          ./configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose --debug
           make
       - name: wine32-tools
         id: wine32-tools
