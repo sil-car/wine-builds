@@ -20,13 +20,6 @@ env:
 
 jobs:
   build:
-    env:
-      CROSSCFLAGS_X32: ${{ env.CFLAGS_X32 }}
-      CROSSCFLAGS_X64: ${{ env.CFLAGS_X64 }}
-      CROSSLDFLAGS: ${{ env.LDFLAGS }}
-      WINE64_DIR: ${{ format('{0}/wine64', env.GITHUB_WORKSPACE) }}
-      WINE32_TOOLS_DIR: ${{ format('{0}/wine32-tools', env.GITHUB_WORKSPACE) }}
-      WINE32_DIR: ${{ format('{0}/wine32', env.GITHUB_WORKSPACE) }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -37,47 +30,59 @@ jobs:
       - name: wine-prep
         id: wine-prep
         run: |
+          # Update environment.
+          echo CROSSCFLAGS_X32=$CFLAGS_X32 >> "$GITHUB_ENV"
+          echo CROSSCFLAGS_X64=$CFLAGS_X64 >> "$GITHUB_ENV"
+          echo CROSSLDFLAGS=$LDFLAGS >> "$GITHUB_ENV"
+          echo WINE64_DIR=$GITHUB_WORKSPACE/wine64 >> "$GITHUB_ENV"
+          echo WINE32_TOOLS_DIR=$GITHUB_WORKSPACE/wine32-tools >> "$GITHUB_ENV"
+          echo WINE32_DIR=$GITHUB_WORKSPACE/wine32 >> "$GITHUB_ENV"
           echo MAKEFLAGS="-j$(($(nproc) + 1))" >> "$GITHUB_ENV"
           # sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get --yes install $NOBLE_BUID_PKGS $NOBLE_WINEDEV_PKGS
-      - name: wine64
+      - name: set wine64 env
+        # Can't use env: here b/c can't refer to existing env vars in their definitions.
+        run: |
+          echo "CROSSCC=$CROSSCC_X64" >> "$GITHUB_ENV"
+          echo "CROSSCXX=$CROSSCXX_X64" >> "$GITHUB_ENV"
+          echo "CFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CXXFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CROSSCFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
+      - name: build wine64
         id: wine64
-        env:
-          CROSSCC: ${{ env.CROSSCC_X64 }}
-          x86_64_CC: ${{ env.CROSSCC_X64 }}
-          CROSSCXX: ${{ env.CROSSCXX_X64 }}
-          CFLAGS: ${{ env.CFLAGS_X64 }}
-          CXXFLAGS: ${{ env.CFLAGS_X64 }}
-          CROSSCFLAGS: ${{ env.CROSSCFLAGS_X64 }}
-          CROSSCXXFLAGS: ${{ env.CROSSCFLAGS_X64 }}
         run: |
           mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
           $GITHUB_WORKSPACE/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
           make
-      - name: wine32-tools
+      - name: set wine32-tools env
+        run: |
+          echo "CROSSCC=$CROSSCC_X32" >> "$GITHUB_ENV"
+          echo "CROSSCXX=$CROSSCXX_X32" >> "$GITHUB_ENV"
+          echo "CFLAGS=$CFLAGS_X32" >> "$GITHUB_ENV"
+          echo "CXXFLAGS=$CFLAGS_X32" >> "$GITHUB_ENV"
+          echo "CROSSCFLAGS=$CROSSCFLAGS_X32" >> "$GITHUB_ENV"
+          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X32" >> "$GITHUB_ENV"
+      - name: build wine32-tools
         id: wine32-tools
         env:
-          CROSSCC: ${{ env.CROSSCC_X32 }}
-          CROSSCXX: ${{ env.CROSSCXX_X32 }}
-          CFLAGS: ${{ env.CFLAGS_X32 }}
-          CXXFLAGS: ${{ env.CFLAGS_X32 }}
-          CROSSCFLAGS: ${{ env.CROSSCFLAGS_X32 }}
-          CROSSCXXFLAGS: ${{ env.CROSSCFLAGS_X32 }}
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE32_TOOLS_DIR" && cd "$WINE32_TOOLS_DIR"
           $GITHUB_WORKSPACE/configure $WINE_CONFIG --prefix=/wine-devel-x86
           make
-      - name: wine32
+      - name: set wine32 env
+        run: |
+          echo "CROSSCC=$CROSSCC_X32" >> "$GITHUB_ENV"
+          echo "CROSSCXX=$CROSSCXX_X32" >> "$GITHUB_ENV"
+          echo "CFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CXXFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CROSSCFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
+          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
+      - name: build wine32
         id: wine32
         env:
-          CROSSCC: ${{ env.CROSSCC_X32 }}
-          CROSSCXX: ${{ env.CROSSCXX_X32 }}
-          CFLAGS: ${{ env.CFLAGS_X64 }}
-          CXXFLAGS: ${{ env.CFLAGS_X64 }}
-          CROSSCFLAGS: ${{ env.CROSSCFLAGS_X64 }}
-          CROSSCXXFLAGS: ${{ env.CROSSCFLAGS_X64 }}
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
