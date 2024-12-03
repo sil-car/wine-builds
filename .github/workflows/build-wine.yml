@@ -13,14 +13,12 @@ env:
   # CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
-  FOCAL_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
-  NOBLE_WINEDEV_PKGS: "libwayland-bin libwayland-dev waylandpp-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev gettext-base libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev"
-  NOBLE_BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
-  # NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 mingw-w64 gcc-multilib"
+  DEV_PKGS: "libcups2-dev libdbus-1-dev libffmpeg-nvenc-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev libgcrypt20-dev libgettextpo-dev libgnutls28-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev libopengl-dev libosmesa6-dev libpcsclite-dev libpulse-dev samba-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev waylandpp-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxpresent-dev libxrandr-dev"
+  BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,7 +38,7 @@ jobs:
           echo MAKEFLAGS="-j$(($(nproc) + 1))" >> "$GITHUB_ENV"
           # sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get --yes install $NOBLE_BUILD_PKGS $NOBLE_WINEDEV_PKGS
+          sudo apt-get --yes install $BUILD_PKGS $DEV_PKGS
       - name: set wine64 env
         # Can't use env: here b/c can't refer to existing env vars in their definitions.
         run: |
