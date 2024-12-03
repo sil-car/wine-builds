@@ -21,7 +21,9 @@ env:
   WINE32_DIR: "${GITHUB_WORKSPACE}/wine32"
   WINE_OUTPUT_DIR: "${GITHUB_WORKSPACE}/wine-output"
   FOCAL_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
-  NOBLE_PKGS: "libwayland-bin libwayland-dev waylandpp-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev gettext-base libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
+  NOBLE_WINEDEV_PKGS: "libwayland-bin libwayland-dev waylandpp-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev gettext-base libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev"
+  # NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
+  NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 mingw-w64 gcc-multilib"
 
 jobs:
   build:
@@ -37,11 +39,12 @@ jobs:
         run: |
           # sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get --yes install $NOBLE_PKGS
+          sudo apt-get --yes install $NOBLE_BUID_PKGS $NOBLE_WINEDEV_PKGS
       - name: wine64
         id: wine64
         env:
           CROSSCC: "${CROSSCC_X64}"
+          x86_64_CC: "${CROSSCC_X64}"
           CROSSCXX: "${CROSSCXX_X64}"
           CFLAGS: "${CFLAGS_X64}"
           CXXFLAGS: "${CFLAGS_X64}"
