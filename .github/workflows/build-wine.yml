@@ -15,7 +15,7 @@ env:
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
   FOCAL_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
   NOBLE_WINEDEV_PKGS: "libwayland-bin libwayland-dev waylandpp-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev gettext-base libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev"
-  NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
+  NOBLE_BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
   # NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 mingw-w64 gcc-multilib"
 
 jobs:
