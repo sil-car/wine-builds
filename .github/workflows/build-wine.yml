@@ -13,7 +13,7 @@ env:
   # CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   WINE_CONFIG: "--without-capi --without-coreaudio --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-oss --without-pcap --without-pcsclite --without-sane --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64"
-  DEV_PKGS: "libavcodec-dev libcups2-dev libdbus-1-dev libffmpeg-nvenc-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev libgcrypt20-dev libgettextpo-dev libgnutls28-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev libopengl-dev libosmesa6-dev libpcsclite-dev libpulse-dev samba-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev waylandpp-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxpresent-dev libxrandr-dev"
+  DEV_PKGS: "libavcodec-dev libcups2-dev libdbus-1-dev libffmpeg-nvenc-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev libgcrypt20-dev libgettextpo-dev libgnutls28-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev libopengl-dev libosmesa6-dev libpcsclite-dev libpulse-dev samba-dev libudev-dev libunwind-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev waylandpp-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxpresent-dev libxrandr-dev"
   BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
 
 jobs:
