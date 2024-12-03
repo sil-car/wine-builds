@@ -82,9 +82,15 @@ jobs:
           mkdir -p "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
           ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_DIR" --prefix=/wine-devel
           make
-      - name: Make artifacts
-        run: |
-          XZ_OPT=-9 tar -Jcf ${GITHUB_WORKSPACE}/wine-devel wine-devel-9.19-wow64.tar.xz
-      - uses: actions/upload-artifact@v4
+      - name: Upload logs
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v4
         with:
-          path: wine-devel-9.19-wow64.tar.xz
+          name: build-logs
+          path: '**/*.log'
+          retention-days: 2
+      - name: Upload build result
+      - uses: actions/upload-artifact@v4
+        name: wine-devel-9.19-wow64
+        with:
+          path: wine-devel/*
