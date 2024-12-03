@@ -90,7 +90,7 @@ jobs:
           path: '**/*.log'
           retention-days: 2
       - name: Upload build result
-      - uses: actions/upload-artifact@v4
-        name: wine-devel-9.19-wow64
+        uses: actions/upload-artifact@v4
         with:
+          name: wine-devel-9.19-wow64
           path: wine-devel/*
