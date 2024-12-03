@@ -9,21 +9,21 @@ env:
   CROSSCC_X64: "x86_64-w64-mingw32-gcc"
   CROSSCXX_X64: "x86_64-w64-mingw32-g++"
   CFLAGS_X32: "-march=x86-64-v2 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
-  # CFLAGS_X64: "-march=x86-64-v2 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
-  CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml
+  CFLAGS_X64: "-march=x86-64-v2 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  # CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml
   CROSSCFLAGS_X32: "$CFLAGS_X32"
   CROSSCFLAGS_X64: "$CFLAGS_X64"
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   CROSSLDFLAGS: "$LDFLAGS"
   MAKEFLAGS: "-j$(nproc)"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
-  WINE64_DIR: "${GITHUB_WORKSPACE}/wine64"
-  WINE32_DIR: "${GITHUB_WORKSPACE}/wine32"
-  WINE_OUTPUT_DIR: "${GITHUB_WORKSPACE}/wine-output"
+  WINE64_DIR: "$GITHUB_WORKSPACE/wine64"
+  WINE32_DIR: "$GITHUB_WORKSPACE/wine32"
+  WINE_OUTPUT_DIR: "$GITHUB_WORKSPACE/wine-output"
   FOCAL_PKGS: "libwayland-bin libwayland-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev waylandpp-dev flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
   NOBLE_WINEDEV_PKGS: "libwayland-bin libwayland-dev waylandpp-dev libvulkan-dev libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libv4l-dev libgphoto2-dev liblcms2-dev libcapi20-dev samba-dev libpcsclite-dev libcups2-dev libxcb-xkb-dev libdbus-1-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype-dev gettext-base libgettextpo-dev libgnutls28-dev libgstreamer-plugins-bad1.0-dev libopengl-dev libosmesa6-dev libxcomposite-dev libxcursor-dev libxi-dev libxinerama-dev ocl-icd-opencl-dev"
-  # NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
-  NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 mingw-w64 gcc-multilib"
+  NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 gcc-mingw-w64 g++-mingw-w64 gcc-multilib"
+  # NOBLE_BUILD_PKGS: "flex bison gcc-9 g++-9 mingw-w64 gcc-multilib"
 
 jobs:
   build:
@@ -43,44 +43,44 @@ jobs:
       - name: wine64
         id: wine64
         env:
-          CROSSCC: "${CROSSCC_X64}"
-          x86_64_CC: "${CROSSCC_X64}"
-          CROSSCXX: "${CROSSCXX_X64}"
-          CFLAGS: "${CFLAGS_X64}"
-          CXXFLAGS: "${CFLAGS_X64}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
-          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCC: "$CROSSCC_X64"
+          x86_64_CC: "$CROSSCC_X64"
+          CROSSCXX: "$CROSSCXX_X64"
+          CFLAGS: "$CFLAGS_X64"
+          CXXFLAGS: "$CFLAGS_X64"
+          CROSSCFLAGS: "$CROSSCFLAGS_X64"
+          CROSSCXXFLAGS: "$CROSSCFLAGS_X64"
         run: |
           mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
-          ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
+          $GITHUB_WORKSPACE/configure $WINE_CONFIG --enable-win64 --prefix=/wine-devel-amd64 --verbose
           make
       - name: wine32-tools
         id: wine32-tools
         env:
-          CROSSCC: "${CROSSCC_X32}"
-          CROSSCXX: "${CROSSCXX_X32}"
-          CFLAGS: "${CFLAGS_X32}"
-          CXXFLAGS: "${CFLAGS_X32}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X32}"
-          CROSSCXXFLAGS: "${CROSSCFLAGS_X32}"
+          CROSSCC: "$CROSSCC_X32"
+          CROSSCXX: "$CROSSCXX_X32"
+          CFLAGS: "$CFLAGS_X32"
+          CXXFLAGS: "$CFLAGS_X32"
+          CROSSCFLAGS: "$CROSSCFLAGS_X32"
+          CROSSCXXFLAGS: "$CROSSCFLAGS_X32"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
-          ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --prefix=/wine-devel-x86
+          $GITHUB_WORKSPACE/configure $WINE_CONFIG --prefix=/wine-devel-x86
           make
       - name: wine32
         id: wine32
         env:
-          CROSSCC: "${CROSSCC_X32}"
-          CROSSCXX: "${CROSSCXX_X32}"
-          CFLAGS: "${CFLAGS_X64}"
-          CXXFLAGS: "${CFLAGS_X64}"
-          CROSSCFLAGS: "${CROSSCFLAGS_X64}"
-          CROSSCXXFLAGS: "${CROSSCFLAGS_X64}"
+          CROSSCC: "$CROSSCC_X32"
+          CROSSCXX: "$CROSSCXX_X32"
+          CFLAGS: "$CFLAGS_X64"
+          CXXFLAGS: "$CFLAGS_X64"
+          CROSSCFLAGS: "$CROSSCFLAGS_X64"
+          CROSSCXXFLAGS: "$CROSSCFLAGS_X64"
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE_OUTPUT_DIR" && cd "$WINE_OUTPUT_DIR"
-          ${GITHUB_WORKSPACE}/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_DIR" --prefix=/wine-devel
+          $GITHUB_WORKSPACE/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_DIR" --prefix=/wine-devel
           make
       - name: Upload logs
         if: '!cancelled()'
