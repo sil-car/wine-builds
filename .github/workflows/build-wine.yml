@@ -8,8 +8,8 @@ env:
   CROSSCXX_X32: "i686-w64-mingw32-g++"
   CROSSCC_X64: "x86_64-w64-mingw32-gcc"
   CROSSCXX_X64: "x86_64-w64-mingw32-g++"
-  CFLAGS_X32: "-march=x86-64-v2 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
-  CFLAGS_X64: "-march=x86-64-v2 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  CFLAGS_X32: "-march=x86-64 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
+  CFLAGS_X64: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
   # CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   WINE_CONFIG: "--without-oss --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64 --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-pcap --without-sane"
@@ -40,7 +40,7 @@ jobs:
           echo MAKEFLAGS="-j$(($(nproc) + 1))" >> "$GITHUB_ENV"
           # sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get --yes install $NOBLE_BUID_PKGS $NOBLE_WINEDEV_PKGS
+          sudo apt-get --yes install $NOBLE_BUILD_PKGS $NOBLE_WINEDEV_PKGS
       - name: set wine64 env
         # Can't use env: here b/c can't refer to existing env vars in their definitions.
         run: |
