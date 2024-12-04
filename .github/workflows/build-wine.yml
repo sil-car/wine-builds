@@ -104,4 +104,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wine-devel-9.19-wow64
-          path: ${{ env.$WINE32_DIR }}/*
+          path: ${{ env.WINE32_DIR }}/*
