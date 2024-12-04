@@ -97,8 +97,8 @@ jobs:
         with:
           name: build-logs
           path: |
-            '**/*.log'
-            '**/*.status'
+            ${{ env.GITHUB_WORKSPACE }}/**/*.log
+            ${{ env.GITHUB_WORKSPACE }}/**/*.status
           retention-days: 2
       - name: Upload build result
         uses: actions/upload-artifact@v4
