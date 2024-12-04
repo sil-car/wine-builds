@@ -124,7 +124,7 @@ jobs:
     - name: download
       uses: actions/download-artifact@v4
       with:
-        name: ${{ env.RELEASE_ZIP }}
+        name: ${{ env.RELEASE_NAME }}
     - name: release
       uses: softprops/action-gh-release@v2
       with:
