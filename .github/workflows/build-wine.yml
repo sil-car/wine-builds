@@ -105,6 +105,7 @@ jobs:
           make
           find -type f | sort > build-dir-filelist.log
           make install
+          find $WINE_OUTPUT_DIR -type f | sort > $GITHUB_WORKSPACE/output-filelist.log
       - name: Upload logs
         if: '!cancelled()'
         uses: actions/upload-artifact@v4
@@ -115,13 +116,8 @@ jobs:
       - name: Clean up release files
         run: |
           cd $WINE_OUTPUT_DIR
-          echo "Files in $PWD:"
-          ls -al .
-          echo "Remove ./share dir."
-          rm -rf ./share
+          rm -r ./share
           cd ./bin
-          echo "Files in $PWD:"
-          ls -al .
           rm ./wine-preloader
           ln -s ./wine wine64
       - name: Upload build result
