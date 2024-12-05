@@ -22,10 +22,10 @@ env:
   CROSSCXX_X64: "x86_64-w64-mingw32-g++"
   CFLAGS_X32: "-march=x86-64 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
   CFLAGS_X64: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
-  # CFLAGS_X64: "-O3 -pipe -march=x86-64-v2 -mpclmul -mavx"  # https://github.com/vinegarhq/wine-builds/blob/master/.github/workflows/wine.yml 
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   WINE_CONFIG: "--without-capi --without-coreaudio --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-oss --without-pcap --without-pcsclite --without-sane --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64"
   DEV_PKGS: "libavcodec-dev libcups2-dev libdbus-1-dev libffmpeg-nvenc-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype6-dev libgcrypt20-dev gettext libgettextpo-dev libgnutls28-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev opencl-headers libopengl-dev libosmesa6-dev libpcsclite-dev libpulse-dev samba-dev libudev-dev libunwind-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev waylandpp-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxkbregistry-dev libxpresent-dev libxrandr-dev"
+  FOCAL_MISSING_PKGS: "libxkbregistry-dev"
   BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
   PKG_CONFIG_PATH: "/usr/lib/x86_64-linux-gnu/pkgconfig"
 
@@ -53,7 +53,11 @@ jobs:
         id: wine-prep
         run: |
           # Update environment.
-          if [ -d ffmpeg ]; then
+          if [[ ${{ inputs.ubuntu-release }} == '20.04' ]]; then
+            for pkg in $FOCAL_MISSING_PKGS; do
+              DEV_PKGS="$(echo $DEV_PKGS | tr -d "$pkg")"
+            done
+            echo "DEV_PKGS=$DEV_PKGS" >> "$GITHUB_ENV"
             echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg/libavcodec" >> "$GITHUB_ENV"
             echo "CFLAGS_X64=$CFLAGS_X64 -I$GITHUB_WORKSPACE/ffmpeg/libavcodec" >> "$GITHUB_ENV"
           fi
