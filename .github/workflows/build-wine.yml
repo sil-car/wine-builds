@@ -55,7 +55,7 @@ jobs:
           # Update environment.
           if [[ ${{ inputs.ubuntu-release }} == '20.04' ]]; then
             for pkg in $FOCAL_MISSING_PKGS; do
-              DEV_PKGS=$(echo $DEV_PKGS | tr -d "$pkg")
+              DEV_PKGS=$(echo ${DEV_PKGS//$pkg})
             done
             echo "DEV_PKGS=$DEV_PKGS" >> "$GITHUB_ENV"
             echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg/libavcodec" >> "$GITHUB_ENV"
