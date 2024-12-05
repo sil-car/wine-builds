@@ -31,7 +31,7 @@ env:
 
 jobs:
   build:
-    # Ubuntu focal (20.04) fails to build 64-bit b/c libavcodec-dev does not include bsf.h.
+    # Ubuntu focal (20.04) fails to build 64-bit b/c libavcodec-dev does not include libavcodec/bsf.h.
     runs-on: ubuntu-${{ inputs.ubuntu-release }}
     steps:
       - uses: actions/checkout@v4
