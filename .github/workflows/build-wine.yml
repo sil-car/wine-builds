@@ -136,10 +136,12 @@ jobs:
       - name: Clean up release files
         run: |
           cd $WINE_OUTPUT_DIR
-          rm -r ./share
+          rm -rf ./include
+          rm -rf ./share
           cd ./bin
           rm ./wine-preloader
           ln -s ./wine wine64
+          chmod +x *
       - name: Upload build result
         uses: actions/upload-artifact@v4
         with:
