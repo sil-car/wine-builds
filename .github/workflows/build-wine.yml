@@ -6,10 +6,14 @@ on:
         description: "The wine version to build; e.g. 9.19"
         required: true
         type: string
+      ubuntu-release:
+        description: "The Ubuntu release to use as build system; e.g. '20.04'"
+        required: true
+        type: string
 
 env:
   WINE_VER: ${{ inputs.version }}
-  RELEASE_NAME: wine-devel_${{ inputs.version }}
+  RELEASE_NAME: wine_${{ inputs.version }}+${{ inputs.ubuntu-release }}
   CC: "gcc-9"
   CXX: "g++-9"
   CROSSCC_X32: "i686-w64-mingw32-gcc"
@@ -28,7 +32,7 @@ env:
 jobs:
   build:
     # Ubuntu focal (20.04) fails to build 64-bit b/c libavcodec-dev does not include bsf.h.
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-${{ inputs.ubuntu-release }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -108,6 +112,18 @@ jobs:
           name: build-logs
           path: '**/*.log'
           retention-days: 2
+      - name: Clean up release files
+        run: |
+          cd $WINE_OUTPUT_DIR
+          echo "Files in $PWD:"
+          ls -al .
+          echo "Remove ./share dir."
+          rm -rf ./share
+          cd ./bin
+          echo "Files in $PWD:"
+          ls -al .
+          rm ./wine-preloader
+          ln -s ./wine wine64
       - name: Upload build result
         uses: actions/upload-artifact@v4
         with:
