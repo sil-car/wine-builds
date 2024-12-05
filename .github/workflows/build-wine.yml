@@ -10,7 +10,6 @@ on:
 env:
   WINE_VER: ${{ inputs.version }}
   RELEASE_NAME: wine-devel_${{ inputs.version }}
-  RELEASE_ZIP: wine-devel_${{ inputs.version }}.zip
   CC: "gcc-9"
   CXX: "g++-9"
   CROSSCC_X32: "i686-w64-mingw32-gcc"
@@ -46,6 +45,7 @@ jobs:
           echo WINE64_DIR=$GITHUB_WORKSPACE/wine64 >> "$GITHUB_ENV"
           echo WINE32_TOOLS_DIR=$GITHUB_WORKSPACE/wine32-tools >> "$GITHUB_ENV"
           echo WINE32_DIR=$GITHUB_WORKSPACE/wine32 >> "$GITHUB_ENV"
+          echo WINE_OUTPUT_DIR=$GITHUB_WORKSPACE/$RELEASE_NAME >> "$GITHUB_ENV"
           echo MAKEFLAGS="-j$(($(nproc) + 1))" >> "$GITHUB_ENV"
           # sudo dpkg --add-architecture i386
           sudo apt-get update
@@ -97,7 +97,7 @@ jobs:
           PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
         run: |
           mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
-          $GITHUB_WORKSPACE/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_TOOLS_DIR" --prefix=$RELEASE_NAME
+          $GITHUB_WORKSPACE/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_TOOLS_DIR" --prefix=$WINE_OUTPUT_DIR
           make
           find -type f | sort > build-dir-filelist.log
           make install
@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_NAME }}
-          path: ${{ env.RELEASE_NAME }}
+          path: ${{ env.WINE_OUTPUT_DIR }}
 
   release:
     runs-on: ubuntu-latest
