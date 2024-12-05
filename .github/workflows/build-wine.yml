@@ -58,8 +58,8 @@ jobs:
               DEV_PKGS=$(echo ${DEV_PKGS//$pkg})
             done
             echo "DEV_PKGS=$DEV_PKGS" >> "$GITHUB_ENV"
-            echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg/libavcodec" >> "$GITHUB_ENV"
-            echo "CFLAGS_X64=$CFLAGS_X64 -I$GITHUB_WORKSPACE/ffmpeg/libavcodec" >> "$GITHUB_ENV"
+            echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
+            echo "CFLAGS_X64=$CFLAGS_X64 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
           fi
           echo CROSSCFLAGS_X32=$CFLAGS_X32 >> "$GITHUB_ENV"
           echo CROSSCFLAGS_X64=$CFLAGS_X64 >> "$GITHUB_ENV"
