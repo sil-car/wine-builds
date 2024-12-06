@@ -52,7 +52,7 @@ jobs:
         id: wine-prep
         run: |
           # Update environment.
-          echo "RELEASE_FILE=$RELEASE_NAME+${{ matrix.release }}.tar.gz" >> "$GITHUB_ENV"
+          echo "RELEASE_FILE=$RELEASE_NAME+${{ matrix.release }}.tar.xz" >> "$GITHUB_ENV"
           if [[ ${{ matrix.release }} == '20.04' ]]; then
             for pkg in $FOCAL_MISSING_PKGS; do
               DEV_PKGS=$(echo ${DEV_PKGS//$pkg})
@@ -150,6 +150,7 @@ jobs:
         with:
           name: ${{ env.RELEASE_FILE }}
           path: ${{ env.RELEASE_FILE }}
+          compression-level: 0
 
   release:
     runs-on: ubuntu-latest
