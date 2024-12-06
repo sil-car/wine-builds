@@ -129,7 +129,7 @@ jobs:
         if: '!cancelled()'
         uses: actions/upload-artifact@v4
         with:
-          name: build-logs
+          name: build-logs-${{ matrix.release }}
           path: '**/*.log'
           retention-days: 2
       - name: Clean up release files
