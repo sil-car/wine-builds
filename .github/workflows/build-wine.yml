@@ -137,14 +137,12 @@ jobs:
         run: |
           cd $WINE_OUTPUT_DIR
           rm -rf ./include
-          rm -rf ./share
+          rm -rf ./share/man
           cd ./bin
           rm ./wine-preloader
           ln -s ./wine wine64
           cd $GITHUB_WORKSPACE
-          ls -al .
           XZ_OPT=-T0 tar -cJvf $RELEASE_FILE $RELEASE_NAME
-          ls -al .
       - name: Upload build result
         uses: actions/upload-artifact@v4
         with:
