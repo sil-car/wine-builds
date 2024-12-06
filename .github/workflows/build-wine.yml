@@ -143,7 +143,7 @@ jobs:
           ln -s ./wine wine64
           cd $GITHUB_WORKSPACE
           ls -al .
-          tar -cJvf $RELEASE_FILE $WINE_OUTPUT_DIR
+          XZ_OPT=-T0 tar -cJvf $RELEASE_FILE $RELEASE_NAME
           ls -al .
       - name: Upload build result
         uses: actions/upload-artifact@v4
