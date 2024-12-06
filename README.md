@@ -1,5 +1,5 @@
 # Tailored builds for wine
-Downloads available on the [releases page](https://github.com/sil-car/wine-builds/releases).
+Downloads available on the [releases page](https://github.com/sil-car/wine-builds/releases). If the minor increment of the wine version is a '0' (e.g. 9.0.1), then it's a stable build. Otherwise it's a devel branch build (e.g. 9.22). There are no builds from wine-staging at the moment. The part after the '+' represents the build base, so '+20.04' means the files were compiled on Ubuntu 20.04, which uses GLIBC v2.31, which means they should work on any other system with GLIBC v2.31 or higher.
 
 These builds are tailored for use with certain productivity-oriented software produced or used by [SIL Global](https://sil.org).
 That means that many parts are left out that might be necessary for playing games but are of no use for productivity-oriented software.
