@@ -139,7 +139,7 @@ jobs:
           rm -rf ./include
           rm -rf ./share/man
           cd ./bin
-          rm ./wine-preloader
+          rm -f ./wine-preloader
           ln -s ./wine wine64
           cd $GITHUB_WORKSPACE
           XZ_OPT=-T0 tar -cJvf $RELEASE_FILE $RELEASE_NAME
