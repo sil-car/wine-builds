@@ -6,6 +6,7 @@ base | GLIBC
 20.04 | 2.31
 22.04 | 2.35
 24.04 | 2.39
+26.04 | 2.43
 
 These builds are tailored for use with certain productivity-oriented software produced or used by [SIL Global](https://sil.org).
 That means that many parts are left out that might be necessary for playing games but are of no use for productivity-oriented software.
