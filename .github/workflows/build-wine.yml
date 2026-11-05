@@ -29,7 +29,7 @@ jobs:
   build:
     strategy:
       matrix:
-        release: [22.04, 24.04]
+        release: [22.04, 24.04, 26.04]
     runs-on: ubuntu-${{ matrix.release }}
     steps:
       - name: get wine source
@@ -60,6 +60,10 @@ jobs:
             echo "DEV_PKGS=$DEV_PKGS" >> "$GITHUB_ENV"
             echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
             echo "CFLAGS_X64=$CFLAGS_X64 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
+          elif [[ ${{ matrix.release }} == '26.04' ]]; then
+            BUILD_PKGS="${BUILD_PKGS//-9/-11}"
+            echo "CC=gcc-11" >> "$GITHUB_ENV"
+            echo "CXX=g++-11" >> "$GITHUB_ENV"
           fi
           echo CROSSCFLAGS_X32=$CFLAGS_X32 >> "$GITHUB_ENV"
           echo CROSSCFLAGS_X64=$CFLAGS_X64 >> "$GITHUB_ENV"
