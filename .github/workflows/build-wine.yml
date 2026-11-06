@@ -56,7 +56,7 @@ jobs:
         run: |
           mkdir -p build && cd build
           $GITHUB_WORKSPACE/configure $WINE_CONFIG --prefix=$WINE_OUTPUT_DIR
-          make && make install
+          make && make install-lib
           find $WINE_OUTPUT_DIR -type f | sort > $GITHUB_WORKSPACE/filelist.log
       - name: Upload logs
         if: '!cancelled()'
