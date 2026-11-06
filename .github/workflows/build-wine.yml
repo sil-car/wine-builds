@@ -10,20 +10,25 @@ on:
 env:
   WINE_VER: ${{ inputs.version }}
   RELEASE_NAME: wine_${{ inputs.version }}
-  CC: "gcc-9"
-  CXX: "g++-9"
-  CROSSCC_X32: "i686-w64-mingw32-gcc"
-  CROSSCXX_X32: "i686-w64-mingw32-g++"
-  CROSSCC_X64: "x86_64-w64-mingw32-gcc"
-  CROSSCXX_X64: "x86_64-w64-mingw32-g++"
-  CFLAGS_X32: "-march=x86-64 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
-  CFLAGS_X64: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  # CC: "gcc-9"
+  # CXX: "g++-9"
+  # CROSSCC_X32: "i686-w64-mingw32-gcc"
+  # CROSSCXX_X32: "i686-w64-mingw32-g++"
+  # CROSSCC_X64: "x86_64-w64-mingw32-gcc"
+  # CROSSCXX_X64: "x86_64-w64-mingw32-g++"
+  CFLAGS: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"  # host (x86_64 unix)
+  CXXFLAGS: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  i386_CFLAGS: "-march=x86-64 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
+  i386_CXXFLAGS: "-march=x86-64 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
+  x86_64_CFLAGS: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+  x86_64_CXXFLAGS: "-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
   LDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
+  CROSSLDFLAGS: "-Wl,-O1,--sort-common,--as-needed"
   WINE_CONFIG: "--without-capi --without-coreaudio --without-gphoto --without-gssapi --without-inotify --without-krb5 --without-oss --without-pcap --without-pcsclite --without-sane --disable-winemenubuilder --disable-win16 --disable-tests --enable-archs=i386,x86_64"
-  DEV_PKGS: "libavcodec-dev libcups2-dev libdbus-1-dev libffmpeg-nvenc-dev libffmpeg-ocaml-dev libfontconfig-dev libfreetype6-dev libgcrypt20-dev gettext libgettextpo-dev libgnutls28-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev opencl-headers libopengl-dev libosmesa6-dev libpcsclite-dev libpulse-dev samba-dev libudev-dev libunwind-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev waylandpp-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxkbregistry-dev libxpresent-dev libxrandr-dev"
-  FOCAL_MISSING_PKGS: "libxkbregistry-dev"
-  BUILD_PKGS: "bison flex g++-9 g++-mingw-w64 gcc-9 gcc-mingw-w64 gcc-multilib pkgconf"
-  PKG_CONFIG_PATH: "/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig"
+  DEV_PKGS: "libavcodec-dev libcups2-dev libdbus-1-dev libfontconfig-dev libfreetype6-dev libgcrypt20-dev gettext libgettextpo-dev libgnutls28-dev libgstreamer-plugins-base1.0-dev libjxr-dev liblcms2-dev opencl-headers libopengl-dev libpulse-dev libudev-dev libunwind-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libwayland-bin libwayland-dev libxcb-xkb-dev libxcomposite-dev libxcursor-dev libxi-dev libxkbregistry-dev libxpresent-dev libxrandr-dev"
+  # FOCAL_MISSING_PKGS: "libxkbregistry-dev"
+  BUILD_PKGS: "bison flex g++ g++-mingw-w64 gcc gcc-mingw-w64 pkgconf"
+  # PKG_CONFIG_PATH: "/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig"
 
 jobs:
   build:
@@ -38,98 +43,21 @@ jobs:
           repository: wine-mirror/wine
           ref: wine-${{ env.WINE_VER }}
           fetch-depth: 1
-      - name: get libavcodec source
-        # Ubuntu focal (20.04) fails to build 64-bit b/c libavcodec-dev does not include libavcodec/bsf.h.
-        # The header can be found in FFmpeg source instead.
-        if: ${{ matrix.release == '20.04' }}
-        uses: actions/checkout@v4
-        with:
-          repository: FFmpeg/FFmpeg
-          ref: n4.2.7
-          fetch-depth: 1
-          path: ffmpeg
       - name: wine-prep
         id: wine-prep
         run: |
-          # Update environment.
           echo "RELEASE_FILE=$RELEASE_NAME+${{ matrix.release }}.tar.xz" >> "$GITHUB_ENV"
-          if [[ ${{ matrix.release }} == '20.04' ]]; then
-            for pkg in $FOCAL_MISSING_PKGS; do
-              DEV_PKGS=$(echo ${DEV_PKGS//$pkg})
-            done
-            echo "DEV_PKGS=$DEV_PKGS" >> "$GITHUB_ENV"
-            echo "CFLAGS_X32=$CFLAGS_X32 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
-            echo "CFLAGS_X64=$CFLAGS_X64 -I$GITHUB_WORKSPACE/ffmpeg" >> "$GITHUB_ENV"
-          elif [[ ${{ matrix.release }} == '26.04' ]]; then
-            BUILD_PKGS="${BUILD_PKGS//-9/-11}"
-            echo "CC=gcc-11" >> "$GITHUB_ENV"
-            echo "CXX=g++-11" >> "$GITHUB_ENV"
-          fi
-          echo CROSSCFLAGS_X32=$CFLAGS_X32 >> "$GITHUB_ENV"
-          echo CROSSCFLAGS_X64=$CFLAGS_X64 >> "$GITHUB_ENV"
-          echo CROSSLDFLAGS=$LDFLAGS >> "$GITHUB_ENV"
-          echo WINE64_DIR=$GITHUB_WORKSPACE/wine64 >> "$GITHUB_ENV"
-          echo WINE32_TOOLS_DIR=$GITHUB_WORKSPACE/wine32-tools >> "$GITHUB_ENV"
-          echo WINE32_DIR=$GITHUB_WORKSPACE/wine32 >> "$GITHUB_ENV"
           echo WINE_OUTPUT_DIR=$GITHUB_WORKSPACE/$RELEASE_NAME >> "$GITHUB_ENV"
           echo MAKEFLAGS="-j$(($(nproc) + 1))" >> "$GITHUB_ENV"
-          # sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get --yes install $BUILD_PKGS $DEV_PKGS
-      - name: set wine64 env
-        # Can't use env: here b/c can't refer to existing env vars in their definitions.
+      - name: build wine
+        id: wine
         run: |
-          echo "CROSSCC=$CROSSCC_X64" >> "$GITHUB_ENV"
-          echo "CROSSCXX=$CROSSCXX_X64" >> "$GITHUB_ENV"
-          echo "CFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CXXFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CROSSCFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
-      - name: build wine64
-        id: wine64
-        run: |
-          mkdir -p "$WINE64_DIR" && cd "$WINE64_DIR"
-          $GITHUB_WORKSPACE/configure $WINE_CONFIG --enable-win64 --verbose --prefix=$WINE_OUTPUT_DIR
-          make
-          find -type f | sort > build-dir-filelist.log
-          make install
-          find $WINE_OUTPUT_DIR -type f | sort > $GITHUB_WORKSPACE/filelist-after-wine64.log
-      - name: set wine32-tools env
-        run: |
-          echo "CROSSCC=$CROSSCC_X32" >> "$GITHUB_ENV"
-          echo "CROSSCXX=$CROSSCXX_X32" >> "$GITHUB_ENV"
-          echo "CFLAGS=$CFLAGS_X32" >> "$GITHUB_ENV"
-          echo "CXXFLAGS=$CFLAGS_X32" >> "$GITHUB_ENV"
-          echo "CROSSCFLAGS=$CROSSCFLAGS_X32" >> "$GITHUB_ENV"
-          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X32" >> "$GITHUB_ENV"
-      - name: build wine32-tools
-        id: wine32-tools
-        env:
-          PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
-        run: |
-          mkdir -p "$WINE32_TOOLS_DIR" && cd "$WINE32_TOOLS_DIR"
-          $GITHUB_WORKSPACE/configure $WINE_CONFIG
-          make
-          find -type f | sort > build-dir-filelist.log
-      - name: set wine32 env
-        run: |
-          echo "CROSSCC=$CROSSCC_X32" >> "$GITHUB_ENV"
-          echo "CROSSCXX=$CROSSCXX_X32" >> "$GITHUB_ENV"
-          echo "CFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CXXFLAGS=$CFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CROSSCFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
-          echo "CROSSCXXFLAGS=$CROSSCFLAGS_X64" >> "$GITHUB_ENV"
-      - name: build wine32
-        id: wine32
-        env:
-          PKG_CONFIG_LIBDIR: /usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/i386-linux-gnu/pkgconfig
-        run: |
-          mkdir -p "$WINE32_DIR" && cd "$WINE32_DIR"
-          $GITHUB_WORKSPACE/configure $WINE_CONFIG --with-wine64="$WINE64_DIR" --with-wine-tools="$WINE32_TOOLS_DIR" --prefix=$WINE_OUTPUT_DIR
-          make
-          find -type f | sort > build-dir-filelist.log
-          make install
-          find $WINE_OUTPUT_DIR -type f | sort > $GITHUB_WORKSPACE/filelist-after-wine32.log
+          mkdir -p build && cd build
+          $GITHUB_WORKSPACE/configure $WINE_CONFIG --prefix=$WINE_OUTPUT_DIR
+          make && make install
+          find $WINE_OUTPUT_DIR -type f | sort > $GITHUB_WORKSPACE/filelist.log
       - name: Upload logs
         if: '!cancelled()'
         uses: actions/upload-artifact@v4
@@ -139,14 +67,11 @@ jobs:
           retention-days: 2
       - name: Clean up release files
         run: |
-          cd $WINE_OUTPUT_DIR
-          rm -rf ./include
-          rm -rf ./share/man
-          cd ./bin
-          rm -f ./wine-preloader
-          ln -s ./wine wine64
+          rm -rf "$WINE_OUTPUT_DIR/share/man"
+          # rm -f "$WINE_OUTPUT_DIR/bin/wine-preloader"
+          ln -sf wine "$WINE_OUTPUT_DIR/bin/wine64"
           cd $GITHUB_WORKSPACE
-          XZ_OPT=-T0 tar -cJvf $RELEASE_FILE $RELEASE_NAME
+          XZ_OPT=-T0 tar -C "$GITHUB_WORKSPACE" -cJf "$RELEASE_FILE" "$RELEASE_NAME"
       - name: Upload build result
         uses: actions/upload-artifact@v4
         with:

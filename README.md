@@ -10,7 +10,7 @@ base | GLIBC
 
 These builds are tailored for use with certain productivity-oriented software produced or used by [SIL Global](https://sil.org).
 That means that many parts are left out that might be necessary for playing games but are of no use for productivity-oriented software.
-The builds use the currently experimental "Shared WoW64 mode", as described on the Wine wiki's [Building Wine page](https://gitlab.winehq.org/wine/wine/-/wikis/Building-Wine#shared-wow64).
+The builds use the currently experimental "new WoW64 mode" (`--enable-archs=i386,x86_64`), as described on the Wine wiki's [Building Wine page](https://gitlab.winehq.org/wine/wine/-/wikis/Building-Wine#new-wow64-build).
 
 ## Build parameters
 Full details can be gleaned from [build-wine.yml](/.github/workflows/build-wine.yml).
